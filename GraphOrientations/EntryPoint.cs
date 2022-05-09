@@ -30,11 +30,18 @@ namespace GraphOrientations
 
                     if (o.CalculateOnly)
                     {
+                        var resultOutput = new List<string>();
+
                         foreach (var g6Graph in reader.ReadGraphs(n))
                         {       
                             var graph = mapper.FromG6(g6Graph);
                             var groupSize = automorphismReader.GetNextAutomorphismGroupSize(g6Graph);
-                            var currentOrientationsCount = orientator.Orient(graph).Count();
+
+                            var orientResult = orientator.OrientWithoutGrahps(graph).ToArray();
+                            var currentOrientationsCount = orientResult.Length;
+                            var graphsCountSavingGroupSize = orientResult.Count(x => x == groupSize);
+                            var averageGroupSize = (orientResult.Sum() + .0) / orientResult.Length;
+
                             totalCount += currentOrientationsCount;
 
                             if (groupSizeToCount.TryGetValue(groupSize, out var value))
@@ -46,7 +53,9 @@ namespace GraphOrientations
                                 groupSizeToCount.Add(groupSize, (1, currentOrientationsCount));
                             }
 
-                            Console.WriteLine($"GroupSizeOf {g6Graph} = {groupSize}; Orientations count = {currentOrientationsCount}");
+                            var output = $"GroupSizeOf {g6Graph} = {groupSize}; Orientations count = {currentOrientationsCount}; GraphsCountSavingGroupSize = {graphsCountSavingGroupSize}; AverageGroupSize = {averageGroupSize}";
+                            Console.WriteLine(output);
+                            resultOutput.Add(output);
                         }
 
                         Console.WriteLine();
@@ -54,6 +63,7 @@ namespace GraphOrientations
                         Console.WriteLine($"Total calculating time in seconds: {(DateTime.Now - startTime).TotalSeconds}.");
                         Console.WriteLine();
                         Console.WriteLine("Average number of orientations depending on the size of the group:");
+                        File.WriteAllLines($"Result_{o.VertexCount}.txt", resultOutput);
 
                         List<string> graphsCountByGroupSize = new List<string>();
                         List<string> orientationsAverageByGroupSize = new List<string>();

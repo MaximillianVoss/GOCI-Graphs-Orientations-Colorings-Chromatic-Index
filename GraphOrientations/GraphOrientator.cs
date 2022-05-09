@@ -43,6 +43,44 @@ namespace GraphOrientations
             }
         }
 
+        public IEnumerable<int> OrientWithoutGrahps(int[] graph)
+        {
+            var codes = new HashSet<long>();
+            var substitutions = Utils.EnumerateAllSubstitutions(graph.Length).ToArray();
+
+            foreach (var orientedGraph in OrientInternal(graph))
+            {
+                var code = Utils.GetGraphCode(orientedGraph);
+
+                if (codes.Contains(code))
+                {
+                    continue;
+                }
+
+                var maxCode = -1L;
+                var groupSize = 1;
+                foreach (var substitution in substitutions)
+                {
+                    var currentGraph = Utils.UseSubstitution(orientedGraph, substitution);
+                    var currentCode = Utils.GetGraphCode(currentGraph);
+
+                    if (currentCode > maxCode)
+                    {
+                        maxCode = currentCode;
+                        groupSize = 1;
+                    }
+                    else if (currentCode == maxCode)
+                    {
+                        groupSize++;
+                    }
+
+                    codes.Add(currentCode);
+                }
+
+                yield return groupSize;
+            }
+        }
+
         private IEnumerable<int[]> OrientInternal(int[] graph, int from = 0, int to = 1)
         {        
             if (from >= graph.Length)
