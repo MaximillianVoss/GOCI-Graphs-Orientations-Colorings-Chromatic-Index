@@ -13,7 +13,7 @@ namespace GraphOrientations
         private const string TempDirectGraphsFileName = "temp_derect_graphs.txt";
         private const string TrashFileName = "trash.txt";
 
-        private static Encoding _encoding = GetEncoding(TempGraphsFileName);
+        private static Encoding _encoding = GetEncoding(Etalon);
 
         public IEnumerable<int> OrientWithoutGrahps(string graph6)
         {
