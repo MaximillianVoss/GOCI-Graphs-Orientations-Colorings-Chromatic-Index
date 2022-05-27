@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace GraphOrientations
 {
-    internal class GraphOrientator
+    internal class GraphOrientator 
     {
         public IEnumerable<(int[] graph, int groupSize)> Orient(int[] graph)
         {
@@ -82,7 +82,7 @@ namespace GraphOrientations
         }
 
         private IEnumerable<int[]> OrientInternal(int[] graph, int from = 0, int to = 1)
-        {        
+        {
             if (from >= graph.Length)
             {
                 yield return graph;

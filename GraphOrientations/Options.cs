@@ -15,5 +15,8 @@ namespace GraphOrientations
 
         [Option('c', "CalculateOnly", Default = true, HelpText = "Do not output graphs (calculate total count only).")]
         public bool CalculateOnly { get; set; }
+
+        [Option('n', "UseNauty", Default = false, HelpText = "Use nauty for orient graphs and calculate groupSize of oriented grahps.")]
+        public bool NautyCalculation { get; set; }
     }
 }

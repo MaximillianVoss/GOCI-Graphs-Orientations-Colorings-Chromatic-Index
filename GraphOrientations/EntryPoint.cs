@@ -19,6 +19,7 @@ namespace GraphOrientations
                     var reader = new GraphsReader();
                     var mapper = new GraphsMapper();
                     var orientator = new GraphOrientator();
+                    var nautyOrientator = new NautyGraphOrientator();
                     IWriter writer = o.WriteGraphsToFile ? new FileWriterCustom(o.FileName) : new ConsoleWriter();
                     var n = o.VertexCount;
 
@@ -37,7 +38,15 @@ namespace GraphOrientations
                             var graph = mapper.FromG6(g6Graph);
                             var groupSize = automorphismReader.GetNextAutomorphismGroupSize(g6Graph);
 
-                            var orientResult = orientator.OrientWithoutGrahps(graph).ToArray();
+                            int[] orientResult;
+                            if (o.NautyCalculation)
+                            {
+                                orientResult = nautyOrientator.OrientWithoutGrahps(g6Graph).ToArray();
+                            }
+                            else
+                            {
+                                orientResult = orientator.OrientWithoutGrahps(graph).ToArray();
+                            }
                             var currentOrientationsCount = orientResult.Length;
                             var graphsCountSavingGroupSize = orientResult.Count(x => x == groupSize);
                             var averageGroupSize = (orientResult.Sum() + .0) / orientResult.Length;
@@ -53,7 +62,7 @@ namespace GraphOrientations
                                 groupSizeToCount.Add(groupSize, (1, currentOrientationsCount));
                             }
 
-                            var output = $"GroupSizeOf {g6Graph} = {groupSize}; Orientations count = {currentOrientationsCount}; GraphsCountSavingGroupSize = {graphsCountSavingGroupSize}; AverageGroupSize = {averageGroupSize}";
+                            var output = $"GroupSizeOf {g6Graph} = {groupSize}; Orientations count = {currentOrientationsCount}; GraphsCountSavingGroupSize = {graphsCountSavingGroupSize}; AverageGroupSize = {averageGroupSize:#.####}";
                             Console.WriteLine(output);
                             resultOutput.Add(output);
                         }
