@@ -1,2 +1,2 @@
-# GraphOrientations-
-Программа для получения всех ориентаций заданных графов
+Графы. Ориентации, раскраски, группировки, хроматический индекс
+GOCI: Graphs, Orientations, Colorings, Chromatic Index
