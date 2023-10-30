@@ -2,7 +2,7 @@
   "profiles": {
     "GraphOrientations": {
       "commandName": "Project",
-      "commandLineArgs": "-v 11 -n -C 2"
+      "commandLineArgs": "-v 9 -n -C 2"
     }
   }
 }
