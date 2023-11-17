@@ -66,7 +66,6 @@ namespace GraphOrientations
             }
         }
 
-
         private List<string> ExecuteProcess(string fileName, string arguments, bool readFromErrorStream = false)
         {
             var processStartInfo = new ProcessStartInfo
