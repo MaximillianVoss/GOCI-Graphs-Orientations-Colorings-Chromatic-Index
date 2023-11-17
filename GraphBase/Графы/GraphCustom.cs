@@ -1,4 +1,5 @@
 ﻿using GraphBase.Параметры;
+using System.Text;
 
 namespace GraphBase.Графы
 {
@@ -154,6 +155,9 @@ namespace GraphBase.Графы
             {
                 for (int v = 0; v < VerticesCount; v++)
                 {
+                    if (u >= VerticesCount || v >= VerticesCount) // Проверка границ массива
+                        continue;
+
                     if (_adjacencyMatrix[u, v] != 1 || edgeColors[u, v] != -1)
                         continue;
 
@@ -163,6 +167,9 @@ namespace GraphBase.Графы
                     // Проверяем цвета смежных рёбер
                     for (int i = 0; i < VerticesCount; i++)
                     {
+                        if (i >= VerticesCount) // Проверка границ массива
+                            continue;
+
                         if (_adjacencyMatrix[u, i] == 1 && edgeColors[u, i] != -1)
                             availableColors[edgeColors[u, i]] = false;
                         if (_adjacencyMatrix[v, i] == 1 && edgeColors[v, i] != -1)
@@ -173,6 +180,9 @@ namespace GraphBase.Графы
                     int cr;
                     for (cr = 0; cr < VerticesCount; cr++)
                     {
+                        if (cr >= VerticesCount) // Проверка границ массива
+                            break;
+
                         if (availableColors[cr])
                             break;
                     }
@@ -184,6 +194,7 @@ namespace GraphBase.Графы
 
             return maxColor;
         }
+
         #endregion
 
         #region Различительное число
@@ -274,6 +285,22 @@ namespace GraphBase.Графы
         {
             var permutations = GetPermutations(Enumerable.Range(0, _adjacencyMatrix.GetLength(0)).ToList());
             return permutations.All(permutation => !IsAutomorphism(permutation, colors));
+        }
+
+        #endregion
+
+        #region Подсчет характеристик
+        public override string GetInfo(int numberOfColors = 0)
+        {
+            // Получаем G6-представление графа
+            string g6String = new G6String(new AdjacencyMatrix(this.AdjacencyMatrix)).G6;
+
+            // Получаем хроматическое число и хроматический индекс
+            int chromaticNumber = GetChromaticNumber();
+            int chromaticIndex = GetChromaticIndex();
+
+            // Формируем итоговую строку
+            return $"G6-представление: {g6String}, Хроматическое число: {chromaticNumber}, Хроматический индекс: {chromaticIndex}";
         }
 
         #endregion
