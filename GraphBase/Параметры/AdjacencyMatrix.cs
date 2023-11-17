@@ -33,6 +33,10 @@ namespace GraphBase.Параметры
         #endregion
 
         #region Конструкторы/Деструкторы
+        public AdjacencyMatrix() : this(new int[0, 0])
+        {
+
+        }
         public AdjacencyMatrix(int[,] matrix)
         {
             this.Matrix = matrix;

@@ -19,6 +19,10 @@ namespace GraphBase.Параметры
         #endregion
 
         #region Конструкторы/Деструкторы
+        public G6String(string g6)
+        {
+            this.g6 = g6;
+        }
         public G6String(AdjacencyMatrix adjacencyMatrix)
         {
             this.G6 = ConvertAdjacencyMatrixToG6String(adjacencyMatrix);
@@ -80,8 +84,20 @@ namespace GraphBase.Параметры
 
             return new AdjacencyMatrix(matrix);
         }
-
-        private static string Rx(int init, int end, string g6)
+        /// <summary>
+        /// Преобразует указанный сегмент строки G6 в бинарное представление.
+        /// </summary>
+        /// <param name="init">Начальный индекс сегмента строки G6 для преобразования.</param>
+        /// <param name="end">Конечный индекс сегмента строки G6 для преобразования.</param>
+        /// <param name="g6">Строка G6, представляющая граф.</param>
+        /// <returns>Бинарная строка, представляющая сегмент строки G6.</returns>
+        /// <remarks>
+        /// Каждый символ строки G6, начиная с индекса <paramref name="init"/> до <paramref name="end"/>,
+        /// преобразуется в шестибитное бинарное число, которое затем добавляется к результирующей бинарной строке.
+        /// Строка G6 кодирует граф, где каждый символ (после корректировки на смещение ASCII в 63) представляет шесть бит,
+        /// соответствующих рёбрам графа.
+        /// </remarks>
+        public static string Rx(int init, int end, string g6)
         {
             string R_x = "";
 

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Text;
+using GraphBase.Графы;
 
-namespace GraphBase
+namespace GraphBase.Генераторы
 {
     /// <summary>
     /// Класс для генерации графов в формате G6.
@@ -41,7 +42,7 @@ namespace GraphBase
             char vertexCount = (char)(vertices + 63);
             graphString.Append(vertexCount);
 
-            int totalPairs = (vertices * (vertices - 1)) / 2;
+            int totalPairs = vertices * (vertices - 1) / 2;
             int byteValue = 0;
             int bitPosition = 0;
 
@@ -67,14 +68,14 @@ namespace GraphBase
         }
 
         /// <summary>
-        /// Создает объект <see cref="Graph"/> из строки в формате G6.
+        /// Создает объект <see cref="GraphCustom"/> из строки в формате G6.
         /// </summary>
         /// <param name="g6">Строка, представляющая граф в формате G6.</param>
-        /// <returns>Экземпляр класса <see cref="Graph"/>.</returns>
-        public Graph CreateGraphFromG6(string g6)
+        /// <returns>Экземпляр класса <see cref="GraphCustom"/>.</returns>
+        public GraphCustom CreateGraphFromG6(string g6)
         {
             int[,] adjacencyMatrix = ConvertG6ToAdjacencyMatrix(g6);
-            return new Graph(adjacencyMatrix);
+            return new GraphCustom(adjacencyMatrix);
         }
 
         /// <summary>
@@ -114,7 +115,7 @@ namespace GraphBase
                     }
 
                     // Установка значения в матрице смежности
-                    adjacencyMatrix[i, j] = adjacencyMatrix[j, i] = (g6[index - 1] - 63) >> (6 - bitCount) & 1;
+                    adjacencyMatrix[i, j] = adjacencyMatrix[j, i] = g6[index - 1] - 63 >> 6 - bitCount & 1;
 
                     bitCount--;
                 }

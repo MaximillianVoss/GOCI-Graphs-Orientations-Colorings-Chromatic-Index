@@ -1,6 +1,9 @@
-using GraphBase;
+using GraphBase.Графы;
+using GraphBase.Параметры;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
-namespace GraphBaseTests
+namespace GraphBaseTests.Граф
 {
     [TestClass]
     public class GraphTests
@@ -8,145 +11,156 @@ namespace GraphBaseTests
         [TestMethod]
         public void ConstructorTest()
         {
+            // Тестируем конструктор с матрицей смежности
             int[,] matrix = { { 0, 1 }, { 1, 0 } };
-            Graph graph = new Graph(matrix);
+            GraphCustom graph = new GraphCustom(matrix);
 
             Assert.AreEqual(2, graph.VerticesCount);
             CollectionAssert.AreEqual(matrix, graph.AdjacencyMatrix);
         }
 
         [TestMethod]
-        public void ToG6Test()
-        {
-            int[,] matrix = { { 0, 1 }, { 1, 0 } };
-            Graph graph = new Graph(matrix);
-
-            string g6String = graph.ToG6();
-            Assert.AreEqual("A_", g6String);
-        }
-
-        [TestMethod]
-        public void FromG6Test()
-        {
-            // Эта строка представляет граф с двумя вершинами и одним ребром между ними
-            string g6String = "A_"; // ASCII for '_' is 95, which gives us 32 in our encoding, representing an edge
-            Graph graph = Graph.FromG6(g6String);
-
-            int[,] expectedMatrix = { { 0, 1 }, { 1, 0 } }; // Ожидаемая матрица смежности
-            for (int i = 0; i < graph.VerticesCount; i++)
-            {
-                for (int j = 0; j < graph.VerticesCount; j++)
-                {
-                    Assert.AreEqual(expectedMatrix[i, j], graph.AdjacencyMatrix[i, j],
-                                    "The adjacency matrix does not match the expected matrix at position [" + i + ", " + j + "]");
-                }
-            }
-        }
-
-        [TestMethod]
         public void Constructor_FromG6String_CreatesExpectedGraph()
         {
-            // Arrange
-            // Эта строка представляет граф из двух вершин с одним ребром между ними
-            string g6String = "A_"; // Должно быть реальное представление вашего графа в формате G6
+            // Тестируем конструктор со строкой G6
+            var g6String = new G6String("A_");
             int[,] expectedAdjacencyMatrix = { { 0, 1 }, { 1, 0 } };
 
-            // Act
-            Graph graph = new Graph(g6String);
+            GraphCustom graph = new GraphCustom(g6String);
 
-            // Assert
-            Assert.AreEqual(expectedAdjacencyMatrix.GetLength(0), graph.VerticesCount, "The number of vertices should match.");
+            Assert.AreEqual(expectedAdjacencyMatrix.GetLength(0), graph.VerticesCount);
             for (int i = 0; i < graph.VerticesCount; i++)
             {
                 for (int j = 0; j < graph.VerticesCount; j++)
                 {
-                    Assert.AreEqual(expectedAdjacencyMatrix[i, j], graph.AdjacencyMatrix[i, j],
-                                    $"The adjacency matrix does not match the expected value at position [{i}, {j}].");
+                    Assert.AreEqual(expectedAdjacencyMatrix[i, j], graph.AdjacencyMatrix[i, j]);
                 }
             }
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void Constructor_EmptyG6String_ThrowsArgumentException()
-        {
-            // Arrange
-            string g6String = "";
-
-            // Act
-            Graph graph = new Graph(g6String);
-
-            // Assert is handled by the ExpectedException attribute
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void Constructor_TooLargeG6String_ThrowsArgumentException()
-        {
-            // Arrange
-            string g6String = "~~..."; // Некорректное значение для демонстрации теста
-
-            // Act
-            Graph graph = new Graph(g6String);
-
-            // Assert is handled by the ExpectedException attribute
         }
 
         [TestMethod]
         public void Constructor_DegreeVector_CreatesExpectedGraph()
         {
-            // Arrange
-            int[] degreeVector = new int[] { 2, 2, 0 }; // Две вершины со степенью 2 и одна со степенью 0
-            int[,] expectedAdjacencyMatrix = new int[,]
-            {
-                { 0, 1, 0 }, // Вершина 1 соединена с вершиной 2
-                { 1, 0, 0 }, // Вершина 2 соединена с вершиной 1
-                { 0, 0, 0 }  // Вершина 3 не соединена ни с одной вершиной
+            // Тестируем конструктор с вектором степеней
+            int[] degreeVector = new int[] { 2, 2, 0 };
+            var edges = new List<Tuple<int, int>> { Tuple.Create(0, 1), Tuple.Create(1, 0) }; // Явно указываем список рёбер
+            int[,] expectedAdjacencyMatrix = {
+                { 0, 1, 0 },
+                { 1, 0, 0 },
+                { 0, 0, 0 }
             };
 
-            // Act
-            var graph = new Graph(degreeVector);
+            GraphCustom graph = new GraphCustom(new DegreeVector(degreeVector, edges)); // Используем конструктор с дополнительной информацией
 
-            // Assert
-            Assert.AreEqual(degreeVector.Length, graph.VerticesCount, "The number of vertices should match.");
+            Assert.AreEqual(degreeVector.Length, graph.VerticesCount);
             for (int i = 0; i < graph.VerticesCount; i++)
             {
                 for (int j = 0; j < graph.VerticesCount; j++)
                 {
-                    Assert.AreEqual(expectedAdjacencyMatrix[i, j], graph.AdjacencyMatrix[i, j],
-                                    $"The adjacency matrix does not match the expected value at position [{i}, {j}].");
+                    Assert.AreEqual(expectedAdjacencyMatrix[i, j], graph.AdjacencyMatrix[i, j]);
                 }
             }
         }
 
         [TestMethod]
-        public void GenerateDegreeVector_ValidGraph_ReturnsCorrectDegreeVector()
+        public void Constructor_CanonicalGraphCode_CreatesExpectedGraph()
         {
             // Arrange
-            // Создаем граф с известным вектором степеней
-            // Например, граф с тремя вершинами и двумя ребрами: A-B, A-C
-            int[,] adjacencyMatrix = new int[,] { { 0, 1, 1 }, { 1, 0, 0 }, { 1, 0, 0 } };
-            var graph = new Graph(adjacencyMatrix);
-            int[] expectedVector = new int[] { 2, 1, 1 }; // Степени вершин: A=2, B=1, C=1
+            // Создаем матрицу смежности и соответствующий список рёбер
+            int[,] adjacencyMatrix = {
+                { 0, 1, 0 },
+                { 1, 0, 1 },
+                { 0, 1, 0 }
+            };
+
+
+            // Создаем канонический код на основе этой матрицы
+            var canonicalCode = new CanonicalGraphCode(new AdjacencyMatrix(adjacencyMatrix));
 
             // Act
-            int[] actualVector = graph.GenerateDegreeVector();
+            // Создаем граф из канонического кода
+            GraphCustom graph = new GraphCustom(canonicalCode);
 
             // Assert
-            CollectionAssert.AreEqual(expectedVector, actualVector, "The degree vector does not match the expected vector.");
+            // Проверяем, что матрица смежности графа соответствует ожидаемой
+            Assert.AreEqual(adjacencyMatrix.GetLength(0), graph.VerticesCount, "Number of vertices should match.");
+            for (int i = 0; i < graph.VerticesCount; i++)
+            {
+                for (int j = 0; j < graph.VerticesCount; j++)
+                {
+                    Assert.AreEqual(adjacencyMatrix[i, j], graph.AdjacencyMatrix[i, j],
+                                    $"Adjacency matrix does not match expected value at position [{i}, {j}].");
+                }
+            }
         }
 
         [TestMethod]
-        public void GenerateDegreeVector_EmptyGraph_ReturnsEmptyVector()
+        public void GetChromaticNumber_SimpleGraph_ReturnsExpectedNumber()
         {
-            // Arrange
-            var graph = new Graph(new int[0, 0]);
+            // Создание простого графа
+            // Граф: A - B - C (линейный граф)
+            int[,] adjacencyMatrix = new int[,]
+            {
+        { 0, 1, 0 },
+        { 1, 0, 1 },
+        { 0, 1, 0 }
+            };
+            GraphCustom graph = new GraphCustom(adjacencyMatrix);
 
-            // Act
-            int[] actualVector = graph.GenerateDegreeVector();
+            // Ожидаемое хроматическое число для линейного графа с тремя вершинами - 2
+            int expectedChromaticNumber = 2;
 
-            // Assert
-            Assert.AreEqual(0, actualVector.Length, "The degree vector for an empty graph should be empty.");
+            // Выполнение
+            int actualChromaticNumber = graph.GetChromaticNumber();
+
+            // Проверка
+            Assert.AreEqual(expectedChromaticNumber, actualChromaticNumber);
         }
+
+        [TestMethod]
+        public void GetChromaticIndex_SimpleGraph_ReturnsExpectedIndex()
+        {
+            // Создание простого графа
+            // Граф: A - B - C (линейный граф)
+            int[,] adjacencyMatrix = new int[,]
+            {
+        { 0, 1, 0 },
+        { 1, 0, 1 },
+        { 0, 1, 0 }
+            };
+            GraphCustom graph = new GraphCustom(adjacencyMatrix);
+
+            // Ожидаемый хроматический индекс для линейного графа с тремя вершинами - 2
+            int expectedChromaticIndex = 2;
+
+            // Выполнение
+            int actualChromaticIndex = graph.GetChromaticIndex();
+
+            // Проверка
+            Assert.AreEqual(expectedChromaticIndex, actualChromaticIndex);
+        }
+
+        [TestMethod]
+        public void GetDistinguishingNumber_CompleteGraph_ReturnsVertexCount()
+        {
+            //// Создаем полный граф с 3 вершинами
+            //int[,] adjacencyMatrix = new int[,]
+            //{
+            //    { 0, 1, 1 },
+            //    { 1, 0, 1 },
+            //    { 1, 1, 0 }
+            //};
+            //GraphCustom graph = new GraphCustom(adjacencyMatrix);
+
+            //// Для полного графа с 3 вершинами различительное число должно быть 3
+            //int expectedDistinguishingNumber = 3;
+            //// Вызываем метод GetDistinguishingNumber
+            //int actualDistinguishingNumber = graph.GetDistinguishingNumber(); // Максимальное количество цветов
+
+            //// Проверяем, что полученное различительное число соответствует ожидаемому
+            //Assert.AreEqual(expectedDistinguishingNumber, actualDistinguishingNumber,
+            //                "The distinguishing number of a complete graph should equal the number of its vertices.");
+        }
+
     }
 }

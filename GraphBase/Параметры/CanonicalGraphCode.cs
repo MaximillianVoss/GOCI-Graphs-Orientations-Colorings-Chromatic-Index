@@ -34,7 +34,7 @@ namespace GraphBase.Параметры
         #endregion
 
         #region Методы
-        private string GenerateHashFromMatrix(AdjacencyMatrix matrix)
+        public string GenerateHashFromMatrix(AdjacencyMatrix matrix)
         {
             var stringBuilder = new StringBuilder();
             for (int i = 0; i < matrix.Matrix.GetLength(0); i++)
@@ -63,6 +63,10 @@ namespace GraphBase.Параметры
 
         public AdjacencyMatrix ToAdjacencyMatrix()
         {
+            if (this.edges == null)
+            {
+                throw new InvalidOperationException("Недостаточно данных для восстановления матрицы смежности.");
+            }
             int size = this.edges.Count > 0 ? this.edges.Max(edge => Math.Max(edge.Item1, edge.Item2)) + 1 : 0;
             var matrix = new int[size, size];
 
