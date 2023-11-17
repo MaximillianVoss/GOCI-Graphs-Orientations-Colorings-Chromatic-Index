@@ -4,16 +4,13 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using GraphBase.Параметры;
-using System.Windows.Forms;
 
 class Program
 {
-    // Установите значение флага DEBUG в true, чтобы выводить сообщения об ошибках, или в false, чтобы их подавлять
-    private const bool DEBUG = true;
-
-    [STAThread] // Необходимо для корректной работы с элементами GUI в консольном приложении
     static void Main(string[] args)
     {
+        bool DEBUG = true; // Значение флага DEBUG
+
         try
         {
             Console.Write("Введите количество вершин для генерации графов: ");
@@ -24,27 +21,20 @@ class Program
             Console.WriteLine("2 - Генерация с помощью канонического кода");
             int methodChoice = Convert.ToInt32(Console.ReadLine());
 
-            SaveFileDialog saveFileDialog = new SaveFileDialog
-            {
-                Filter = "Текстовые файлы (*.txt)|*.txt",
-                Title = "Сохранение отчета",
-                FileName = $"Отчет граф {vertexCount} вершин.txt"
-            };
+            Console.WriteLine("Выберите тип графа:");
+            Console.WriteLine("1 - Пользовательский");
+            Console.WriteLine("2 - QuickGraph");
+            int graphTypeChoice = Convert.ToInt32(Console.ReadLine());
 
-            if (saveFileDialog.ShowDialog() != DialogResult.OK)
-            {
-                Console.WriteLine("Сохранение отчета отменено пользователем.");
-                return;
-            }
-
-            string reportFilePath = saveFileDialog.FileName;
             var generator = new GeneratorNaughty(vertexCount);
+            var reportFileName = $"Отчет граф {vertexCount} вершин - {(graphTypeChoice == 1 ? "Пользовательский" : "QuickGraph")}.txt";
 
-            using (var reportFile = new StreamWriter(reportFilePath))
+            using (var reportFile = new StreamWriter(reportFileName))
             {
                 var totalStopwatch = Stopwatch.StartNew();
+                int graphNumber = 1; // Счетчик номера графа
 
-                foreach (var g6 in generator.GenerateAllGraphsG6())
+                foreach (var g6 in generator.GenerateAllGraphsG6(vertexCount, GeneratorType.GENERATOR_BY_CANONICAL_CODE))
                 {
                     try
                     {
@@ -55,19 +45,25 @@ class Program
                         {
                             case 1:
                                 DegreeVector degreeVector = adjacencyMatrix.ToDegreeVector();
-                                graph = new GraphCustom(degreeVector);
+                                graph = graphTypeChoice == 1 ? new GraphCustom(degreeVector) : new GraphQuickGraph(adjacencyMatrix.Matrix);
                                 break;
                             case 2:
                                 CanonicalGraphCode canonicalGraphCode = adjacencyMatrix.ToCanonicalGraphCode();
-                                graph = new GraphCustom(canonicalGraphCode);
+                                graph = graphTypeChoice == 1 ? new GraphCustom(canonicalGraphCode) : new GraphQuickGraph(adjacencyMatrix.Matrix);
                                 break;
                             default:
                                 throw new InvalidOperationException("Неизвестный метод генерации графов.");
                         }
 
+                        // Выводим номер графа перед информацией
+                        Console.Write($"Граф #{graphNumber}:");
+                        reportFile.Write($"Граф #{graphNumber}:");
+
                         var graphInfo = graph.GetInfo();
                         Console.WriteLine(graphInfo);
                         reportFile.WriteLine(graphInfo);
+
+                        graphNumber++; // Увеличиваем счетчик номера графа
                     }
                     catch (Exception ex)
                     {
