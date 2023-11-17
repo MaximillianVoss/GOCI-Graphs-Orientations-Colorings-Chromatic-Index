@@ -9,7 +9,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        bool DEBUG = true; // Значение флага DEBUG
+        bool DEBUG = false; // Значение флага DEBUG
 
         try
         {
@@ -27,7 +27,10 @@ class Program
             int graphTypeChoice = Convert.ToInt32(Console.ReadLine());
 
             var generator = new GeneratorNaughty(vertexCount);
-            var reportFileName = $"Отчет граф {vertexCount} вершин - {(graphTypeChoice == 1 ? "Пользовательский" : "QuickGraph")}.txt";
+            string generationMethod = methodChoice == 1 ? "Вектор степеней" : "Канонический код";
+            string graphType = graphTypeChoice == 1 ? "Пользовательский" : "QuickGraph";
+
+            var reportFileName = $"Отчет граф {vertexCount} вершин - {generationMethod} - {graphType}.txt";
 
             using (var reportFile = new StreamWriter(reportFileName))
             {
