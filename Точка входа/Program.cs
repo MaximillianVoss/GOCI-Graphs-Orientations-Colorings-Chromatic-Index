@@ -62,7 +62,7 @@ class Program
                         Console.Write($"Граф #{graphNumber}:");
                         reportFile.Write($"Граф #{graphNumber}:");
 
-                        var graphInfo = graph.GetInfo();
+                        var graphInfo = graph.ToString();
                         Console.WriteLine(graphInfo);
                         reportFile.WriteLine(graphInfo);
 
