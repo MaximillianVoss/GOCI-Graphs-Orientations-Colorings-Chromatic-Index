@@ -48,11 +48,13 @@ class Program
                         {
                             case 1:
                                 DegreeVector degreeVector = adjacencyMatrix.ToDegreeVector();
-                                graph = graphTypeChoice == 1 ? new GraphCustom(degreeVector) : new GraphQuickGraph(adjacencyMatrix.Matrix);
+                                //graph = graphTypeChoice == 1 ? new GraphCustom(degreeVector) : new GraphQuickGraph(adjacencyMatrix.Matrix);
+                                graph = new GraphCustom(degreeVector);
                                 break;
                             case 2:
                                 CanonicalGraphCode canonicalGraphCode = adjacencyMatrix.ToCanonicalGraphCode();
-                                graph = graphTypeChoice == 1 ? new GraphCustom(canonicalGraphCode) : new GraphQuickGraph(adjacencyMatrix.Matrix);
+                                //graph = graphTypeChoice == 1 ? new GraphCustom(canonicalGraphCode) : new GraphQuickGraph(adjacencyMatrix.Matrix);
+                                graph = new GraphCustom(canonicalGraphCode);
                                 break;
                             default:
                                 throw new InvalidOperationException("Неизвестный метод генерации графов.");
