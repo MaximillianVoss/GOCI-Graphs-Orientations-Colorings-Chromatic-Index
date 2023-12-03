@@ -17,7 +17,7 @@ namespace GraphOrientations
         public NautyGraphOrientator()
         {
             this._encoding = this.GetEncoding(Etalon);
-            var processId = Process.GetCurrentProcess().Id;
+            int processId = Process.GetCurrentProcess().Id;
             this.TempGraphsFileName = $"temp_graphs_{processId}.txt";
             this.TempDirectGraphsFileName = $"temp_direct_graphs_{processId}.txt";
             this.TrashFileName = $"trash_{processId}.txt";
@@ -26,9 +26,9 @@ namespace GraphOrientations
         public IEnumerable<int> OrientWithoutGrahps(string graph6)
         {
             File.WriteAllText(this.TempGraphsFileName, graph6 + '\n', this._encoding);
-            this.ExecuteProcess("directg.exe", $"-o {this.TempGraphsFileName} {this.TempDirectGraphsFileName}");
+            _ = this.ExecuteProcess("directg.exe", $"-o {this.TempGraphsFileName} {this.TempDirectGraphsFileName}");
 
-            var result = this.ExecuteProcess("pickg.exe", $"--a -V {this.TempDirectGraphsFileName} {this.TrashFileName}", true);
+            List<string> result = this.ExecuteProcess("pickg.exe", $"--a -V {this.TempDirectGraphsFileName} {this.TrashFileName}", true);
 
             return result
                 .Where(line => line.Contains('='))
@@ -53,7 +53,7 @@ namespace GraphOrientations
 
             using (var process = Process.Start(processStartInfo))
             {
-                var streamReader = readFromErrorStream ? process.StandardError : process.StandardOutput;
+                StreamReader streamReader = readFromErrorStream ? process.StandardError : process.StandardOutput;
                 string line;
 
                 while ((line = streamReader.ReadLine()) != null)
@@ -68,10 +68,10 @@ namespace GraphOrientations
 
         private Encoding GetEncoding(string filename)
         {
-            var bom = new byte[4];
+            byte[] bom = new byte[4];
             using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
-                file.Read(bom, 0, 4);
+                _ = file.Read(bom, 0, 4);
             }
 
             if (bom[0] == 0x2b && bom[1] == 0x2f && bom[2] == 0x76)

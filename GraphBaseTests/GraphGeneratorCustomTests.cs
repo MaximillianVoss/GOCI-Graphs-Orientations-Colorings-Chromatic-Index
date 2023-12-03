@@ -1,9 +1,4 @@
 ﻿using GraphBase.Генераторы;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GraphBaseTests.Генераторы
 {
@@ -19,7 +14,7 @@ namespace GraphBaseTests.Генераторы
             int expectedNumberOfGraphs = 2; // Для 2 вершин должно быть 2^(2 * (2 - 1) / 2) = 2 графа
 
             // Act
-            List<string> generatedGraphs = generator.GenerateAllGraphsG6().ToList();
+            var generatedGraphs = generator.GenerateAllGraphsG6().ToList();
 
             // Assert
             Assert.AreEqual(expectedNumberOfGraphs, generatedGraphs.Count, "The number of generated graphs should match the expected number.");
@@ -40,7 +35,7 @@ namespace GraphBaseTests.Генераторы
         };
 
             // Act
-            HashSet<string> generatedGraphs = generator.GenerateAllGraphsG6().ToHashSet();
+            var generatedGraphs = generator.GenerateAllGraphsG6().ToHashSet();
 
             // Assert
             CollectionAssert.AreEquivalent(expectedGraphs.ToList(), generatedGraphs.ToList(), "The generated graphs should match the expected set of graphs.");

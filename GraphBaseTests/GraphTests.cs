@@ -1,7 +1,5 @@
 using GraphBase.Графы;
 using GraphBase.Параметры;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 namespace GraphBaseTests.Граф
 {
@@ -13,7 +11,7 @@ namespace GraphBaseTests.Граф
         {
             // Тестируем конструктор с матрицей смежности
             int[,] matrix = { { 0, 1 }, { 1, 0 } };
-            GraphCustom graph = new GraphCustom(matrix);
+            var graph = new GraphCustom(matrix);
 
             Assert.AreEqual(2, graph.VerticesCount);
             CollectionAssert.AreEqual(matrix, graph.AdjacencyMatrix);
@@ -26,7 +24,7 @@ namespace GraphBaseTests.Граф
             var g6String = new G6String("A_");
             int[,] expectedAdjacencyMatrix = { { 0, 1 }, { 1, 0 } };
 
-            GraphCustom graph = new GraphCustom(g6String);
+            var graph = new GraphCustom(g6String);
 
             Assert.AreEqual(expectedAdjacencyMatrix.GetLength(0), graph.VerticesCount);
             for (int i = 0; i < graph.VerticesCount; i++)
@@ -50,7 +48,7 @@ namespace GraphBaseTests.Граф
                 { 0, 0, 0 }
             };
 
-            GraphCustom graph = new GraphCustom(new DegreeVector(degreeVector, edges)); // Используем конструктор с дополнительной информацией
+            var graph = new GraphCustom(new DegreeVector(degreeVector, edges)); // Используем конструктор с дополнительной информацией
 
             Assert.AreEqual(degreeVector.Length, graph.VerticesCount);
             for (int i = 0; i < graph.VerticesCount; i++)
@@ -79,7 +77,7 @@ namespace GraphBaseTests.Граф
 
             // Act
             // Создаем граф из канонического кода
-            GraphCustom graph = new GraphCustom(canonicalCode);
+            var graph = new GraphCustom(canonicalCode);
 
             // Assert
             // Проверяем, что матрица смежности графа соответствует ожидаемой
@@ -105,7 +103,7 @@ namespace GraphBaseTests.Граф
         { 1, 0, 1 },
         { 0, 1, 0 }
             };
-            GraphCustom graph = new GraphCustom(adjacencyMatrix);
+            var graph = new GraphCustom(adjacencyMatrix);
 
             // Ожидаемое хроматическое число для линейного графа с тремя вершинами - 2
             int expectedChromaticNumber = 2;
@@ -128,7 +126,7 @@ namespace GraphBaseTests.Граф
         { 1, 0, 1 },
         { 0, 1, 0 }
             };
-            GraphCustom graph = new GraphCustom(adjacencyMatrix);
+            var graph = new GraphCustom(adjacencyMatrix);
 
             // Ожидаемый хроматический индекс для линейного графа с тремя вершинами - 2
             int expectedChromaticIndex = 2;

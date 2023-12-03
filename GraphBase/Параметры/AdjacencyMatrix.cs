@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace GraphBase.Параметры
+﻿namespace GraphBase.Параметры
 {
     public class AdjacencyMatrix
     {
@@ -40,7 +36,7 @@ namespace GraphBase.Параметры
         public AdjacencyMatrix(int[,] matrix)
         {
             this.Matrix = matrix;
-            InitializeDegreeVectorAndEdges();
+            this.InitializeDegreeVectorAndEdges();
         }
         #endregion
 

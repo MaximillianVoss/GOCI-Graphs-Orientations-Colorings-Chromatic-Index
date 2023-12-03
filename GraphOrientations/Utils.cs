@@ -6,7 +6,7 @@ namespace GraphOrientations
     {
         public static IEnumerable<int[]> EnumerateAllSubstitutions(int n)
         {
-            var vertexNumbers = new int[n];
+            int[] vertexNumbers = new int[n];
             bool[] used = new bool[n];
 
             return Enumerate(used, 0);
@@ -26,7 +26,7 @@ namespace GraphOrientations
                             used[i] = true;
                             vertexNumbers[deep] = i;
 
-                            foreach (var val in Enumerate(used, deep + 1))
+                            foreach (int[] val in Enumerate(used, deep + 1))
                                 yield return val;
 
                             used[i] = false;
@@ -39,7 +39,7 @@ namespace GraphOrientations
         public static int[] UseSubstitution(int[] graph, int[] substitution)
         {
             int length = graph.Length;
-            var result = new int[length];
+            int[] result = new int[length];
 
             for (int i = 0; i < length; i++)
             {

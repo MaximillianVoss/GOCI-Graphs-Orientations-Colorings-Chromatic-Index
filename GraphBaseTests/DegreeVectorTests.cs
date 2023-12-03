@@ -1,10 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GraphBase.Параметры;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace GraphBase.Параметры
+﻿namespace GraphBase.Параметры
 {
     [TestClass]
     public class DegreeVectorTests
@@ -37,7 +31,7 @@ namespace GraphBase.Параметры
             int[] degrees = { 1, 1 };
             var degreeVector = new DegreeVector(degrees);
 
-            var matrix = degreeVector.ToAdjacencyMatrix();
+            _ = degreeVector.ToAdjacencyMatrix();
         }
 
         [TestMethod]

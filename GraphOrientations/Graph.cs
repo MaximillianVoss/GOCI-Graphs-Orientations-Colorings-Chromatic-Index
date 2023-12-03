@@ -14,11 +14,17 @@ namespace GraphOrientations
         /// <summary>
         /// Граф в формате G6
         /// </summary>
-        public String G6 { set; get; }
+        public String G6
+        {
+            set; get;
+        }
         /// <summary>
         /// Матрица смежности
         /// </summary>
-        public int[] AdjacencyMatrix { set; get; }
+        public int[] AdjacencyMatrix
+        {
+            set; get;
+        }
         /// <summary>
         /// Число вершин
         /// </summary>
@@ -37,16 +43,16 @@ namespace GraphOrientations
         /// <exception cref="Exception"></exception>
         public int[] FromG6(string strG6)
         {
-            var n = strG6[0] - '?';
-            var result = new int[n];
+            int n = strG6[0] - '?';
+            int[] result = new int[n];
 
-            Parallel.For(1, n, i =>
+            _ = Parallel.For(1, n, i =>
             {
-                var rOffset = 32;
-                var k = 1;
-                var val = strG6[k] - '?';
+                int rOffset = 32;
+                int k = 1;
+                int val = strG6[k] - '?';
 
-                var offset = 1;
+                int offset = 1;
 
                 for (int j = 0; j < i; j++)
                 {
@@ -92,7 +98,7 @@ namespace GraphOrientations
         // Вот простой метод для нахождения хроматического индекса с использованием "жадного" метода:
         public int ChromaticIndex()
         {
-            int n = VertexCount;
+            int n = this.VertexCount;
             int[] color = new int[n];
 
             for (int i = 0; i < n; i++)
@@ -100,14 +106,14 @@ namespace GraphOrientations
                 color[i] = -1;
             }
 
-            List<int> availableColors = new List<int>(Enumerable.Range(0, n));
+            var availableColors = new List<int>(Enumerable.Range(0, n));
 
             for (int u = 0; u < n; u++)
             {
-                List<int> neighbors = new List<int>();
+                var neighbors = new List<int>();
                 for (int v = 0; v < n; v++)
                 {
-                    if ((AdjacencyMatrix[u] & (1 << v)) != 0 && u != v)
+                    if ((this.AdjacencyMatrix[u] & (1 << v)) != 0 && u != v)
                     {
                         neighbors.Add(v);
                     }
@@ -117,7 +123,7 @@ namespace GraphOrientations
                 {
                     if (color[v] != -1)
                     {
-                        availableColors.Remove(color[v]);
+                        _ = availableColors.Remove(color[v]);
                     }
                 }
 

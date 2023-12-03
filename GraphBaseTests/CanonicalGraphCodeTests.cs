@@ -1,10 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GraphBase.Параметры;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
-namespace GraphBase.Параметры
+﻿namespace GraphBase.Параметры
 {
     [TestClass]
     public class CanonicalGraphCodeTests
@@ -29,7 +23,7 @@ namespace GraphBase.Параметры
             var adjacencyMatrix = new AdjacencyMatrix(matrix);
 
             var canonicalCode = new CanonicalGraphCode(adjacencyMatrix);
-            var expectedHash = canonicalCode.GenerateHashFromMatrix(adjacencyMatrix);
+            string expectedHash = canonicalCode.GenerateHashFromMatrix(adjacencyMatrix);
 
             Assert.AreEqual(expectedHash, canonicalCode.Hash);
         }

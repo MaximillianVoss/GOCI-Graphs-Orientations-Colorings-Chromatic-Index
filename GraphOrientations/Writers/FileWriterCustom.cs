@@ -9,21 +9,38 @@ namespace GraphOrientations.Writers
 
         public FileWriterCustom(string FileName)
         {
-            _fileName = FileName ?? throw new ArgumentNullException(nameof(FileName));
+            this._fileName = FileName ?? throw new ArgumentNullException(nameof(FileName));
 
-            if (File.Exists(_fileName))
+            if (File.Exists(this._fileName))
             {
-                File.WriteAllText(_fileName, "");
+                File.WriteAllText(this._fileName, "");
             }
             else
             {
-                using (var fs = File.Create(_fileName)) { };
+                using (FileStream fs = File.Create(this._fileName))
+                {
+                };
             }
         }
 
-        public void Write(string s) => File.AppendAllText(_fileName, s);
-        public void Write(int value) => File.AppendAllText(_fileName, value.ToString());
-        public void WriteLine(string s) => File.AppendAllText(_fileName, s + Environment.NewLine);
-        public void WriteLine() => File.AppendAllText(_fileName, Environment.NewLine);
+        public void Write(string s)
+        {
+            File.AppendAllText(this._fileName, s);
+        }
+
+        public void Write(int value)
+        {
+            File.AppendAllText(this._fileName, value.ToString());
+        }
+
+        public void WriteLine(string s)
+        {
+            File.AppendAllText(this._fileName, s + Environment.NewLine);
+        }
+
+        public void WriteLine()
+        {
+            File.AppendAllText(this._fileName, Environment.NewLine);
+        }
     }
 }

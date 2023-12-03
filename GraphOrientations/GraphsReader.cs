@@ -15,10 +15,10 @@ namespace GraphOrientations
                 RedirectStandardOutput = true
             };
             using var compiler = new Process { StartInfo = startInfo };
-            compiler.Start();
+            _ = compiler.Start();
             while (!compiler.StandardOutput.EndOfStream)
             {
-                var current = compiler.StandardOutput.ReadLine();
+                string current = compiler.StandardOutput.ReadLine();
                 if (!string.IsNullOrWhiteSpace(current))
                 {
                     yield return current;

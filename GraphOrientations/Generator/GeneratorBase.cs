@@ -23,14 +23,23 @@ namespace GraphOrientations.Generator
         /// Генерирует графы в формате G6
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<string> GenerateGraphG6(int vertexCount, bool isNaughy = true) { throw new NotImplementedException(); }
+        public IEnumerable<string> GenerateGraphG6(int vertexCount, bool isNaughy = true)
+        {
+            throw new NotImplementedException();
+        }
         /// <summary>
         /// Генерирует графы с указанным числом вершин
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Graph> GenerateGraph(int vertexCount, bool isNaughy = true) { throw new NotImplementedException(); }
+        public IEnumerable<Graph> GenerateGraph(int vertexCount, bool isNaughy = true)
+        {
+            throw new NotImplementedException();
+        }
 
-        protected IEnumerable<Graph> GenerateGraph() { throw new NotImplementedException(); }
+        protected IEnumerable<Graph> GenerateGraph()
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region Общие
@@ -79,7 +88,7 @@ namespace GraphOrientations.Generator
 
         public static List<int> UseSubstitution(List<int> vector, List<int> substitution)
         {
-            var n = vector.Count;
+            int n = vector.Count;
             var result = new List<int>(new int[n]);
 
             for (int i = 0; i < n; i++)
@@ -101,9 +110,9 @@ namespace GraphOrientations.Generator
 
         public static long GetSimpleCode(List<int> vector)
         {
-            var result = 0L;
+            long result = 0L;
 
-            var currentMask = 1;
+            int currentMask = 1;
             for (int i = 0; i < vector.Count; i++)
             {
                 for (int j = i + 1, jMask = 1 << (i + 1); j < vector.Count; j++, jMask <<= 1)
@@ -122,9 +131,9 @@ namespace GraphOrientations.Generator
 
         public static long GetMaxCode(List<int> vector, int bitsCount)
         {
-            var result = 0L;
+            long result = 0L;
 
-            var currentMask = 1L << bitsCount;
+            long currentMask = 1L << bitsCount;
             for (int i = 0; i < vector.Count; i++)
             {
                 for (int j = i + 1, jMask = 1 << (i + 1); j < vector.Count; j++, jMask <<= 1)
@@ -164,7 +173,7 @@ namespace GraphOrientations.Generator
         }
         public IEnumerable<string> GenerateGraphs(int vertexCount, GeneratorType generatorType)
         {
-            var arguments = this.GetArguments(vertexCount, generatorType);
+            string arguments = this.GetArguments(vertexCount, generatorType);
             var startInfo = new ProcessStartInfo(this.gengPath, arguments)
             {
                 RedirectStandardOutput = true,

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using GraphBase.Параметры;
+﻿using System.Diagnostics;
 
 namespace GraphBase.Графы
 {
@@ -14,12 +12,12 @@ namespace GraphBase.Графы
         /// <summary>
         /// Получает матрицу смежности графа.
         /// </summary>
-        public int[,] AdjacencyMatrix => _adjacencyMatrix;
+        public int[,] AdjacencyMatrix => this._adjacencyMatrix;
 
         /// <summary>
         /// Получает количество вершин в графе.
         /// </summary>
-        public int VerticesCount => _adjacencyMatrix.GetLength(0);
+        public int VerticesCount => this._adjacencyMatrix.GetLength(0);
         #endregion
 
         #region Конструкторы/Деструкторы
@@ -46,7 +44,7 @@ namespace GraphBase.Графы
         public string ToString(int numberOfColors = 0)
         {
             var stopwatch = Stopwatch.StartNew();
-            string info = GetInfo(numberOfColors);
+            string info = this.GetInfo(numberOfColors);
             stopwatch.Stop();
             return $"{info}, Вычислено за: {stopwatch.ElapsedMilliseconds} мс";
         }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 
 namespace GraphBase.Параметры
 {
@@ -25,7 +23,7 @@ namespace GraphBase.Параметры
         }
         public G6String(AdjacencyMatrix adjacencyMatrix)
         {
-            this.G6 = ConvertAdjacencyMatrixToG6String(adjacencyMatrix);
+            this.G6 = this.ConvertAdjacencyMatrixToG6String(adjacencyMatrix);
         }
         #endregion
 
@@ -33,7 +31,7 @@ namespace GraphBase.Параметры
         private string ConvertAdjacencyMatrixToG6String(AdjacencyMatrix adjacencyMatrix)
         {
             var sb = new StringBuilder();
-            sb.Append((char)(adjacencyMatrix.Matrix.GetLength(0) + 63));
+            _ = sb.Append((char)(adjacencyMatrix.Matrix.GetLength(0) + 63));
 
             int bitIndex = 0;
             int currentByte = 0;
@@ -49,7 +47,7 @@ namespace GraphBase.Параметры
                     bitIndex++;
                     if (bitIndex == 6)
                     {
-                        sb.Append((char)(currentByte + 63));
+                        _ = sb.Append((char)(currentByte + 63));
                         bitIndex = 0;
                         currentByte = 0;
                     }
@@ -58,7 +56,7 @@ namespace GraphBase.Параметры
 
             if (bitIndex > 0)
             {
-                sb.Append((char)(currentByte + 63));
+                _ = sb.Append((char)(currentByte + 63));
             }
 
             return sb.ToString();

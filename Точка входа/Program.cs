@@ -1,16 +1,27 @@
-﻿using GraphBase.Графы;
-using GraphBase.Генераторы;
-using System;
-using System.Diagnostics;
-using System.IO;
+﻿using GraphBase.Генераторы;
+using GraphBase.Графы;
 using GraphBase.Параметры;
+using System.Diagnostics;
 
 class Program
 {
+    /// <summary>
+    /// Для тестирования некоторых графов непосредственно
+    /// </summary>
+    static void Test()
+    {
+        var g6Test = new G6String("GV~~~{");
+        var vectorTst = g6Test.ToAdjacencyMatrix().DegreeVector;
+        var adjacencyMatrixTest = g6Test.ToAdjacencyMatrix();
+        var testGraph = new GraphCustom(g6Test);
+        var infoTets = testGraph.ToString();
+        var testGraph2 = new GraphCustom(adjacencyMatrixTest.ToDegreeVector());
+        var testGraph3 = new GraphCustom(adjacencyMatrixTest.ToCanonicalGraphCode());
+    }
     static void Main(string[] args)
     {
-        bool DEBUG = false; // Значение флага DEBUG
-
+        //Test();
+        bool DEBUG = false; // Значение флага DEBUGk
         try
         {
             Console.Write("Введите количество вершин для генерации графов: ");
@@ -30,29 +41,30 @@ class Program
             string generationMethod = methodChoice == 1 ? "Вектор степеней" : "Канонический код";
             string graphType = graphTypeChoice == 1 ? "Пользовательский" : "QuickGraph";
 
-            var reportFileName = $"Отчет граф {vertexCount} вершин - {generationMethod} - {graphType}.txt";
+            string reportFileName = $"Отчет граф {vertexCount} вершин - {generationMethod} - {graphType}.txt";
 
             using (var reportFile = new StreamWriter(reportFileName))
             {
                 var totalStopwatch = Stopwatch.StartNew();
                 int graphNumber = 1; // Счетчик номера графа
 
-                foreach (var g6 in generator.GenerateAllGraphsG6(vertexCount, GeneratorType.GENERATOR_BY_CANONICAL_CODE))
+                //foreach (string g6 in generator.GenerateAllGraphsG6(vertexCount, GeneratorType.BY_CANONICAL_CODE))
+                foreach (string g6 in generator.GenerateAllGraphsG6(vertexCount, GeneratorType.CONNECTED_GRAPHS))
                 {
                     try
                     {
-                        AdjacencyMatrix adjacencyMatrix = new G6String(g6).ToAdjacencyMatrix();
+                        var adjacencyMatrix = new G6String(g6).ToAdjacencyMatrix();
                         Graph graph = null;
 
                         switch (methodChoice)
                         {
                             case 1:
-                                DegreeVector degreeVector = adjacencyMatrix.ToDegreeVector();
+                                var degreeVector = adjacencyMatrix.ToDegreeVector();
                                 //graph = graphTypeChoice == 1 ? new GraphCustom(degreeVector) : new GraphQuickGraph(adjacencyMatrix.Matrix);
                                 graph = new GraphCustom(degreeVector);
                                 break;
                             case 2:
-                                CanonicalGraphCode canonicalGraphCode = adjacencyMatrix.ToCanonicalGraphCode();
+                                var canonicalGraphCode = adjacencyMatrix.ToCanonicalGraphCode();
                                 //graph = graphTypeChoice == 1 ? new GraphCustom(canonicalGraphCode) : new GraphQuickGraph(adjacencyMatrix.Matrix);
                                 graph = new GraphCustom(canonicalGraphCode);
                                 break;
@@ -61,10 +73,12 @@ class Program
                         }
 
                         // Выводим номер графа перед информацией
-                        Console.Write($"Граф #{graphNumber}:");
-                        reportFile.Write($"Граф #{graphNumber}:");
+                        string graphNumStr = $"Граф #{graphNumber}:";
+                        Console.Write(graphNumStr);
+                        reportFile.Write(graphNumStr);
 
-                        var graphInfo = graph.ToString();
+
+                        string graphInfo = graph.ToString();
                         Console.WriteLine(graphInfo);
                         reportFile.WriteLine(graphInfo);
 
@@ -74,14 +88,14 @@ class Program
                     {
                         if (DEBUG)
                         {
-                            Console.WriteLine($"Ошибка при обработке графа: {ex.Message}");
+                            Console.WriteLine($"Ошибка при обработке графа {g6}: {ex.Message}");
                             reportFile.WriteLine($"Ошибка при обработке графа: {ex.Message}");
                         }
                     }
                 }
 
                 totalStopwatch.Stop();
-                var totalTimeInfo = $"Общее время выполнения: {totalStopwatch.ElapsedMilliseconds} мс";
+                string totalTimeInfo = $"Общее время выполнения: {totalStopwatch.ElapsedMilliseconds} мс";
 
                 Console.WriteLine(totalTimeInfo);
                 reportFile.WriteLine(totalTimeInfo);

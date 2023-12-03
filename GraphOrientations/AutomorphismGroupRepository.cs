@@ -14,7 +14,7 @@ namespace GraphOrientations
             processInfo.StartInfo.RedirectStandardOutput = true;
             processInfo.StartInfo.RedirectStandardInput = true;
             processInfo.StartInfo.RedirectStandardError = true;
-            processInfo.Start();
+            _ = processInfo.Start();
 
             processInfo.StandardInput.WriteLine(graphRepresentation + '\n');
             processInfo.StandardInput.Flush();
@@ -27,7 +27,7 @@ namespace GraphOrientations
 
             processInfo.WaitForExit();
 
-            var digits = errorLine.Split('=').Last().TakeWhile(char.IsDigit);
+            System.Collections.Generic.IEnumerable<char> digits = errorLine.Split('=').Last().TakeWhile(char.IsDigit);
             return int.Parse(new string(digits.ToArray()));
         }
 

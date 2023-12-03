@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 
 namespace GraphBase.Параметры
 {
@@ -28,8 +26,8 @@ namespace GraphBase.Параметры
         #region Конструкторы/Деструкторы
         public CanonicalGraphCode(AdjacencyMatrix matrix)
         {
-            this.hash = GenerateHashFromMatrix(matrix);
-            this.edges = ExtractEdgesFromMatrix(matrix);
+            this.hash = this.GenerateHashFromMatrix(matrix);
+            this.edges = this.ExtractEdgesFromMatrix(matrix);
         }
         #endregion
 
@@ -41,7 +39,7 @@ namespace GraphBase.Параметры
             {
                 for (int j = 0; j < matrix.Matrix.GetLength(1); j++)
                 {
-                    stringBuilder.Append(matrix.Matrix[i, j]);
+                    _ = stringBuilder.Append(matrix.Matrix[i, j]);
                 }
             }
             return stringBuilder.ToString().GetHashCode().ToString();
@@ -49,7 +47,7 @@ namespace GraphBase.Параметры
 
         private List<Tuple<int, int>> ExtractEdgesFromMatrix(AdjacencyMatrix matrix)
         {
-            List<Tuple<int, int>> edges = new List<Tuple<int, int>>();
+            var edges = new List<Tuple<int, int>>();
             for (int i = 0; i < matrix.Matrix.GetLength(0); i++)
             {
                 for (int j = i + 1; j < matrix.Matrix.GetLength(1); j++)
@@ -68,9 +66,9 @@ namespace GraphBase.Параметры
                 throw new InvalidOperationException("Недостаточно данных для восстановления матрицы смежности.");
             }
             int size = this.edges.Count > 0 ? this.edges.Max(edge => Math.Max(edge.Item1, edge.Item2)) + 1 : 0;
-            var matrix = new int[size, size];
+            int[,] matrix = new int[size, size];
 
-            foreach (var edge in this.edges)
+            foreach (Tuple<int, int> edge in this.edges)
             {
                 matrix[edge.Item1, edge.Item2] = 1;
                 matrix[edge.Item2, edge.Item1] = 1;

@@ -22,10 +22,10 @@ namespace GraphOrientations
         public static void Main(string[] args)
         {
             var consoleArguments = new Options();
-            Parser.Default.ParseArguments<Options>(args)
+            _ = Parser.Default.ParseArguments<Options>(args)
                 .WithParsed(o =>
                 {
-                    var startTime = DateTime.Now;
+                    DateTime startTime = DateTime.Now;
                     var orientator = new GraphOrientator();
                     var generator = new GeneratorBase();
                     IWriter writer = o.WriteGraphsToFile ? new FileWriterCustom(o.FileName) : new ConsoleWriter();
@@ -43,13 +43,13 @@ namespace GraphOrientations
                         var resultOutput = new List<string>();
                         var automorphismReader = new AutomorphismGroupRepository();
                         var groupSizeToCount = new Dictionary<int, (int graphsCount, int OrientationsTotalCount)>();
-                        var graphs = generator.GenerateGraphs(vertexCount, GeneratorType.GENERATOR_BY_CANONICAL_CODE);
+                        IEnumerable<string> graphs = generator.GenerateGraphs(vertexCount, GeneratorType.GENERATOR_BY_CANONICAL_CODE);
                         if (graphs.Count() > Limit)
                             graphs = graphs.Take(Limit).ToList();
                         var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
 
 
-                        Parallel.ForEach(graphs, parallelOptions, g6Graph =>
+                        _ = Parallel.ForEach(graphs, parallelOptions, g6Graph =>
                         {
                             var graph = new Graph(g6Graph);
                             int groupSize = automorphismReader.GetNextAutomorphismGroupSize(g6Graph);
@@ -65,7 +65,7 @@ namespace GraphOrientations
                                 writer.WriteLine($"Current graph: {g6Graph}; Group size: {groupSize}");
                                 writer.WriteLine();
 
-                                foreach (var (oriented, _) in orientator.Orient(graph.AdjacencyMatrix))
+                                foreach ((int[] oriented, _) in orientator.Orient(graph.AdjacencyMatrix))
                                 {
                                     for (int i = 0; i < vertexCount; i++)
                                     {
@@ -76,7 +76,7 @@ namespace GraphOrientations
                                         writer.WriteLine();
                                     }
                                     writer.WriteLine();
-                                    Interlocked.Increment(ref totalCount);
+                                    _ = Interlocked.Increment(ref totalCount);
                                 }
                                 writer.WriteLine();
                             }
@@ -95,7 +95,7 @@ namespace GraphOrientations
 
                 });
             Console.WriteLine("Для продолжения нажмите любую клавишу");
-            Console.ReadLine();
+            _ = Console.ReadLine();
         }
 
         private static void ProcessGraphCalculations(int id, Graph graph, string g6Graph, int groupSize, int[] orientResult, int colorsCount, Dictionary<int, (int graphsCount, int OrientationsTotalCount)> groupSizeToCount, ref int totalCount)
@@ -106,7 +106,7 @@ namespace GraphOrientations
 
             totalCount += currentOrientationsCount;
 
-            if (groupSizeToCount.TryGetValue(groupSize, out var value))
+            if (groupSizeToCount.TryGetValue(groupSize, out (int graphsCount, int OrientationsTotalCount) value))
             {
                 groupSizeToCount[groupSize] = (value.graphsCount + 1, value.OrientationsTotalCount + currentOrientationsCount);
             }
@@ -114,7 +114,7 @@ namespace GraphOrientations
             {
                 groupSizeToCount.Add(groupSize, (1, currentOrientationsCount));
             }
-            var coloringsCount = GraphColoring.ChromaticPolynomial(g6Graph, colorsCount);
+            int coloringsCount = GraphColoring.ChromaticPolynomial(g6Graph, colorsCount);
             //РазмерГруппы,КоличествоРаскрасок,КоличествоОриентаций,КоличествоГрафовССохранениемРазмераГруппы,СреднийРазмерГруппы
             string format = "Номер: {0,10}; Граф: {1,8}; РГ: {2,8}; КР: {3,8}; КО: {4,8}; КГсРГ: {5,8}; СРГ: {6,8:#.####} ХИ:{7}";
             string output = string.Format(
@@ -147,7 +147,7 @@ namespace GraphOrientations
             const int paddingOrientationCount = 20;
 
             Console.WriteLine($"Размер группы".PadRight(paddingGroupSize) + $"Количество ориентаций".PadRight(paddingOrientationCount));
-            foreach (var kvp in groupSizeToCount.OrderBy(x => x.Key))
+            foreach (KeyValuePair<int, (int graphsCount, int OrientationsTotalCount)> kvp in groupSizeToCount.OrderBy(x => x.Key))
             {
                 Console.WriteLine($"{kvp.Key.ToString().PadRight(paddingGroupSize)}{(double)kvp.Value.OrientationsTotalCount / kvp.Value.graphsCount:#.##}".PadRight(paddingOrientationCount));
             }
@@ -158,9 +158,9 @@ namespace GraphOrientations
         {
             File.WriteAllLines($"Result_{n}.txt", resultOutput);
 
-            List<string> graphsCountByGroupSize = new List<string>();
-            List<string> orientationsAverageByGroupSize = new List<string>();
-            foreach (var kvp in groupSizeToCount.OrderBy(x => x.Key))
+            var graphsCountByGroupSize = new List<string>();
+            var orientationsAverageByGroupSize = new List<string>();
+            foreach (KeyValuePair<int, (int graphsCount, int OrientationsTotalCount)> kvp in groupSizeToCount.OrderBy(x => x.Key))
             {
                 graphsCountByGroupSize.Add($"({kvp.Key};{kvp.Value.OrientationsTotalCount})");
                 orientationsAverageByGroupSize.Add($"({kvp.Key};{(double)kvp.Value.OrientationsTotalCount / kvp.Value.graphsCount})");

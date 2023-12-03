@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace GraphBase.Параметры
+﻿namespace GraphBase.Параметры
 {
     public class DegreeVector
     {
@@ -11,15 +8,9 @@ namespace GraphBase.Параметры
         #endregion
 
         #region Свойства
-        public int[] Degrees
-        {
-            get => this.degrees;
-        }
+        public int[] Degrees => this.degrees;
 
-        public List<Tuple<int, int>> Edges
-        {
-            get => this.edges;
-        }
+        public List<Tuple<int, int>> Edges => this.edges;
         #endregion
 
         #region Конструкторы/Деструкторы
@@ -47,9 +38,9 @@ namespace GraphBase.Параметры
             }
 
             int size = this.degrees.Length;
-            var matrix = new int[size, size];
+            int[,] matrix = new int[size, size];
 
-            foreach (var edge in this.edges)
+            foreach (Tuple<int, int> edge in this.edges)
             {
                 matrix[edge.Item1, edge.Item2] = 1;
                 matrix[edge.Item2, edge.Item1] = 1;
@@ -58,7 +49,12 @@ namespace GraphBase.Параметры
             return new AdjacencyMatrix(matrix);
         }
 
-        // Другие методы класса DegreeVector
+        // Метод для получения вектора степеней в виде строки
+        public override string ToString()
+        {
+            // Используем String.Join для соединения элементов массива в строку
+            return string.Join(" ", this.degrees);
+        }
         #endregion
 
         #region Операторы

@@ -1,8 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GraphBase.Параметры;
-using System;
-
-namespace GraphBase.Параметры
+﻿namespace GraphBase.Параметры
 {
     [TestClass]
     public class AdjacencyMatrixTests
@@ -13,8 +9,9 @@ namespace GraphBase.Параметры
             // Arrange
             int[,] matrix = { { 0, 1 }, { 1, 0 } };
 
+
             // Act
-            var adjacencyMatrix = new AdjacencyMatrix(matrix);
+            _ = new AdjacencyMatrix(matrix);
 
             // Assert
             // Проверки для matrix, edges, degreeVector

@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GraphBase.Генераторы
+﻿namespace GraphBase.Генераторы
 {
     public enum GeneratorType
     {
         /// <summary>
-        /// Использует илгоритм получения канонического кода как из nauty
+        /// Использует алгоритм получения канонического кода как из nauty
+        /// Канонический код — это способ представления графа, который однозначен для изоморфных графов
         /// </summary>
-        GENERATOR_BY_CANONICAL_CODE = 1,
+        BY_CANONICAL_CODE = 1,
         /// <summary>
         /// Перебирает все графы для каждого кода
         /// </summary>
@@ -23,8 +18,14 @@ namespace GraphBase.Генераторы
         /// <summary>
         /// Перебирает все коды, останавливая рекурсивный процесс, если текущий код не канонический
         /// </summary>
-        BRUTE_FORCE_ALL_CODES_WITH_FILTER = 4
+        BRUTE_FORCE_ALL_CODES_WITH_FILTER = 4,
+        /// <summary>
+        /// Генерирует все связанные графы для заданного числа вершин
+        /// Связанный граф — это свойство графа, обозначающее, что любые две вершины соединены путем вершин и ребер
+        /// </summary>
+        CONNECTED_GRAPHS = 5
     }
+
     public abstract class GraphGeneratorBase
     {
         #region Поля

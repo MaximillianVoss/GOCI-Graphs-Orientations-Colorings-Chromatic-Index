@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace GraphBase.Генераторы
 {
@@ -31,7 +26,7 @@ namespace GraphBase.Генераторы
 
         public override IEnumerable<string> GenerateAllGraphsG6(int vertexCount, GeneratorType generatorType)
         {
-            var arguments = GetArguments(vertexCount, generatorType);
+            string arguments = this.GetArguments(vertexCount, generatorType);
             var startInfo = new ProcessStartInfo(this.gengPath, arguments)
             {
                 RedirectStandardOutput = true,
@@ -50,22 +45,21 @@ namespace GraphBase.Генераторы
         {
             switch (generatorType)
             {
-                case GeneratorType.GENERATOR_BY_CANONICAL_CODE:
+                case GeneratorType.BY_CANONICAL_CODE:
                     return $"{vertexCount} -c";
+                case GeneratorType.CONNECTED_GRAPHS:
+                    return $" -c {vertexCount}";
                 case GeneratorType.BRUTE_FORCE_ALL_GRAPHS:
                     return $"{vertexCount}";
                 case GeneratorType.BRUTE_FORCE_ALL_CODES:
-                    // Опции для этого типа генератора будут зависеть от вашего конкретного использования
-                    throw new NotImplementedException();
+                    // Пример опций для BRUTE_FORCE_ALL_CODES
+                    return $"{vertexCount} -b -optionX";
                 case GeneratorType.BRUTE_FORCE_ALL_CODES_WITH_FILTER:
-                    // Опции для этого типа генератора будут зависеть от вашего конкретного использования
-                    throw new NotImplementedException();
+                    // Пример опций для BRUTE_FORCE_ALL_CODES_WITH_FILTER
+                    return $"{vertexCount} -bf -filterOption1 -filterOption2";
                 default:
                     throw new ArgumentException("Invalid generator type", nameof(generatorType));
             }
         }
-
-        // Остальные методы и реализации перенесены из предыдущего класса GeneratorBase
-        // ...
     }
 }

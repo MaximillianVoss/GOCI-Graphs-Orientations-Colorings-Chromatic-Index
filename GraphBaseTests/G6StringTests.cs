@@ -1,9 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GraphBase.Параметры;
-using System;
-using System.Linq;
-
-namespace GraphBase.Параметры
+﻿namespace GraphBase.Параметры
 {
     [TestClass]
     public class G6StringTests

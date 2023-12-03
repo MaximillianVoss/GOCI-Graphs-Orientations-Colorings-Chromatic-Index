@@ -16,12 +16,30 @@ namespace GraphOrientations
         #endregion
 
         #region Свойства
-        private string PathStandart { set; get; }
-        private string PathTempFolder { set; get; }
-        private string PathTempGraphs { set; get; }
-        private string PathTempDirectGraphs { set; get; }
-        private string PathTrash { set; get; }
-        private Encoding FileEncoding { set; get; }
+        private string PathStandart
+        {
+            set; get;
+        }
+        private string PathTempFolder
+        {
+            set; get;
+        }
+        private string PathTempGraphs
+        {
+            set; get;
+        }
+        private string PathTempDirectGraphs
+        {
+            set; get;
+        }
+        private string PathTrash
+        {
+            set; get;
+        }
+        private Encoding FileEncoding
+        {
+            set; get;
+        }
         #endregion
 
         #region Методы
@@ -41,16 +59,16 @@ namespace GraphOrientations
         public IEnumerable<int> OrientWithoutGraphs(string graph6)
         {
             // Генерируем уникальные имена файлов для каждого потока
-            var tempGraphsFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            var tempDirectGraphsFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            var trashFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            string tempGraphsFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            string tempDirectGraphsFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            string trashFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
             try
             {
                 File.WriteAllText(tempGraphsFile, graph6 + '\n', this.FileEncoding);
-                this.ExecuteProcess("directg.exe", $"-o {tempGraphsFile} {tempDirectGraphsFile}");
+                _ = this.ExecuteProcess("directg.exe", $"-o {tempGraphsFile} {tempDirectGraphsFile}");
 
-                var result = this.ExecuteProcess("pickg.exe", $"--a -V {tempDirectGraphsFile} {trashFile}", true);
+                List<string> result = this.ExecuteProcess("pickg.exe", $"--a -V {tempDirectGraphsFile} {trashFile}", true);
 
                 return result
                     .Where(line => line.Contains('='))
@@ -82,7 +100,7 @@ namespace GraphOrientations
 
             using (var process = Process.Start(processStartInfo))
             {
-                var streamReader = readFromErrorStream ? process.StandardError : process.StandardOutput;
+                StreamReader streamReader = readFromErrorStream ? process.StandardError : process.StandardOutput;
                 string line;
 
                 while ((line = streamReader.ReadLine()) != null)
@@ -96,10 +114,10 @@ namespace GraphOrientations
 
         private Encoding GetEncoding(string filename)
         {
-            var bom = new byte[4];
+            byte[] bom = new byte[4];
             using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
-                file.Read(bom, 0, 4);
+                _ = file.Read(bom, 0, 4);
             }
 
             if (bom[0] == 0x2b && bom[1] == 0x2f && bom[2] == 0x76)
@@ -122,24 +140,24 @@ namespace GraphOrientations
         public IEnumerable<(int[] graph, int groupSize)> Orient(int[] graph)
         {
             var codes = new HashSet<long>();
-            var substitutions = Utils.EnumerateAllSubstitutions(graph.Length).ToArray();
+            int[][] substitutions = Utils.EnumerateAllSubstitutions(graph.Length).ToArray();
             var results = new ConcurrentBag<(int[] graph, int groupSize)>();
 
-            Parallel.ForEach(this.OrientInternal(graph), orientedGraph =>
+            _ = Parallel.ForEach(this.OrientInternal(graph), orientedGraph =>
             {
-                var code = Utils.GetGraphCode(orientedGraph);
+                long code = Utils.GetGraphCode(orientedGraph);
 
                 if (!codes.Add(code))
                 {
                     return;
                 }
 
-                var maxCode = -1L;
-                var groupSize = 1;
-                foreach (var substitution in substitutions)
+                long maxCode = -1L;
+                int groupSize = 1;
+                foreach (int[] substitution in substitutions)
                 {
-                    var currentGraph = Utils.UseSubstitution(orientedGraph, substitution);
-                    var currentCode = Utils.GetGraphCode(currentGraph);
+                    int[] currentGraph = Utils.UseSubstitution(orientedGraph, substitution);
+                    long currentCode = Utils.GetGraphCode(currentGraph);
 
                     if (currentCode > maxCode)
                     {
@@ -151,7 +169,7 @@ namespace GraphOrientations
                         groupSize++;
                     }
 
-                    codes.Add(currentCode);
+                    _ = codes.Add(currentCode);
                 }
 
                 results.Add((orientedGraph, groupSize));
@@ -163,24 +181,24 @@ namespace GraphOrientations
         public IEnumerable<int> OrientWithoutGraphs(int[] graph)
         {
             var codes = new HashSet<long>();
-            var substitutions = Utils.EnumerateAllSubstitutions(graph.Length).ToArray();
+            int[][] substitutions = Utils.EnumerateAllSubstitutions(graph.Length).ToArray();
             var groupSizes = new ConcurrentBag<int>();
 
-            Parallel.ForEach(this.OrientInternal(graph), orientedGraph =>
+            _ = Parallel.ForEach(this.OrientInternal(graph), orientedGraph =>
             {
-                var code = Utils.GetGraphCode(orientedGraph);
+                long code = Utils.GetGraphCode(orientedGraph);
 
                 if (!codes.Add(code))
                 {
                     return;
                 }
 
-                var maxCode = -1L;
-                var groupSize = 1;
-                foreach (var substitution in substitutions)
+                long maxCode = -1L;
+                int groupSize = 1;
+                foreach (int[] substitution in substitutions)
                 {
-                    var currentGraph = Utils.UseSubstitution(orientedGraph, substitution);
-                    var currentCode = Utils.GetGraphCode(currentGraph);
+                    int[] currentGraph = Utils.UseSubstitution(orientedGraph, substitution);
+                    long currentCode = Utils.GetGraphCode(currentGraph);
 
                     if (currentCode > maxCode)
                     {
@@ -192,7 +210,7 @@ namespace GraphOrientations
                         groupSize++;
                     }
 
-                    codes.Add(currentCode);
+                    _ = codes.Add(currentCode);
                 }
 
                 groupSizes.Add(groupSize);
@@ -213,13 +231,13 @@ namespace GraphOrientations
                     return;
                 }
 
-                var toMask = 1 << toIndex;
+                int toMask = 1 << toIndex;
                 int nextFrom = toIndex >= inputGraph.Length - 1 ? fromIndex + 1 : fromIndex;
                 int nextTo = toIndex == inputGraph.Length - 1 ? nextFrom + 1 : toIndex + 1;
 
                 if ((inputGraph[fromIndex] & toMask) != 0)
                 {
-                    var fromMask = 1 << fromIndex;
+                    int fromMask = 1 << fromIndex;
                     inputGraph[toIndex] ^= fromMask;
                     OrientInternalRecursive(inputGraph, nextFrom, nextTo);
                     inputGraph[toIndex] ^= fromMask;
@@ -247,7 +265,7 @@ namespace GraphOrientations
         {
             this.PathStandart = "standard.txt";
             this.FileEncoding = this.GetEncoding(this.PathStandart);
-            var processId = Process.GetCurrentProcess().Id;
+            int processId = Process.GetCurrentProcess().Id;
             this.PathTempFolder = "temp\\";
             this.PathTempGraphs = $"{this.PathTempFolder}temp_graphs_{processId}.txt";
             this.PathTempDirectGraphs = $"{this.PathTempFolder}temp_direct_graphs_{processId}.txt";
