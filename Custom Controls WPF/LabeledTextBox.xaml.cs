@@ -37,10 +37,17 @@ namespace CustomControlsWPF
         {
             set
             {
-                this.txbValue.Text = value;
-                this.isValidCheck();
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    this.txbValue.Text = value;
+                    this.isValidCheck();
+                });
             }
-            get => this.txbValue.Text;
+            get
+            {
+                // Для безопасного вызова из фонового потока
+                return Application.Current.Dispatcher.Invoke(() => this.txbValue.Text);
+            }
         }
         /// <summary>
         /// Строка, которая будет показана при ошибке валидации
@@ -103,15 +110,19 @@ namespace CustomControlsWPF
         {
             get
             {
-                if (this.RegEx == null || this.RegEx == String.Empty || this.txbValue.Text == null)
+                return Application.Current.Dispatcher.Invoke(() =>
                 {
-                    return true;
-                }
+                    if (string.IsNullOrEmpty(this.RegEx) || string.IsNullOrEmpty(this.txbValue.Text))
+                    {
+                        return true;
+                    }
 
-                Regex regex = new Regex(this.RegEx);
-                return regex.IsMatch(this.txbValue.Text);
+                    var regex = new Regex(this.RegEx);
+                    return regex.IsMatch(this.txbValue.Text);
+                });
             }
         }
+
         public Brush BackgroundColor
         {
             set => this.gMain.Background = value;

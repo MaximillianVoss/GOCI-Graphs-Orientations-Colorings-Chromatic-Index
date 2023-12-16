@@ -172,13 +172,21 @@ namespace CustomControlsWPF
         {
             set
             {
-                if (value < this.cbItems.Items.Count)
+                Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    this.cbItems.SelectedIndex = value;
-                }
+                    if (value < this.cbItems.Items.Count)
+                    {
+                        this.cbItems.SelectedIndex = value;
+                    }
+                }));
             }
-            get => this.cbItems.SelectedIndex;
+            get
+            {
+                // Обеспечиваем потокобезопасный доступ к свойству SelectedIndex
+                return Application.Current.Dispatcher.Invoke(() => this.cbItems.SelectedIndex);
+            }
         }
+
         /// <summary>
         /// Строка выделенного элемента в списке
         /// </summary>

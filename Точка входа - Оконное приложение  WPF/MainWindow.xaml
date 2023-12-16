@@ -1,13 +1,17 @@
-﻿<Window x:Class="Точка_входа___Оконное_приложение__WPF.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Точка_входа___Оконное_приложение__WPF"
+        xmlns:CustomControlsWPF="clr-namespace:CustomControlsWPF;assembly=CustomControlsWPF" x:Class="Точка_входа___Оконное_приложение__WPF.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="370" Width="496">
     <Grid>
-        <DataGrid x:Name="dataGrid" d:ItemsSource="{d:SampleData ItemCount=5}"/>
-
+        <CustomControlsWPF:LabeledComboBox x:Name="cmbMethod" Margin="10,81,10,0" VerticalAlignment="Top" Title="Метод генерации графов"/>
+        <CustomControlsWPF:LabeledTextBox x:Name="txbVertexCount" Margin="10,6,10,0" VerticalAlignment="Top" Title="Количество вершин" Text=""/>
+        <CustomControlsWPF:LabeledComboBox x:Name="cmbGraphType" Margin="10,156,10,0" VerticalAlignment="Top" Title="Тип графа"/>
+        <CustomControlsWPF:ButtonPrimary Margin="10,0,10,11" VerticalAlignment="Bottom" Height="40" Text="Высчислить хроматическое число и индекс" Click="ButtonPrimary_Click"/>
+        <CustomControlsWPF:LabeledProgressBar x:Name="pbProgress" Margin="10,236,10,0" VerticalAlignment="Top" Header="Прогресс выполнения задачи"/>
     </Grid>
 </Window>
