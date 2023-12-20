@@ -11,7 +11,7 @@
         <CustomControlsWPF:LabeledComboBox x:Name="cmbMethod" Margin="10,81,10,0" VerticalAlignment="Top" Title="Метод генерации графов"/>
         <CustomControlsWPF:LabeledTextBox x:Name="txbVertexCount" Margin="10,6,10,0" VerticalAlignment="Top" Title="Количество вершин" Text=""/>
         <CustomControlsWPF:LabeledComboBox x:Name="cmbGraphType" Margin="10,156,10,0" VerticalAlignment="Top" Title="Тип графа"/>
-        <CustomControlsWPF:ButtonPrimary Margin="10,0,10,11" VerticalAlignment="Bottom" Height="40" Text="Высчислить хроматическое число и индекс" Click="ButtonPrimary_Click"/>
+        <CustomControlsWPF:ButtonPrimary Margin="10,0,10,11" VerticalAlignment="Bottom" Height="40" Text="Вычислить хроматическое число и индекс" Click="ButtonPrimary_Click"/>
         <CustomControlsWPF:LabeledProgressBar x:Name="pbProgress" Margin="10,236,10,0" VerticalAlignment="Top" Header="Прогресс выполнения задачи"/>
     </Grid>
 </Window>

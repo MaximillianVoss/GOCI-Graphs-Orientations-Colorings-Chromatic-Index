@@ -194,7 +194,6 @@ namespace Точка_входа___Оконное_приложение__WPF
             }
         }
 
-
         private void ShowError(Exception ex)
         {
             MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
