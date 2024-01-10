@@ -1,6 +1,7 @@
 ﻿using GraphBase.Параметры;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace GraphBase.Графы
@@ -88,7 +89,7 @@ namespace GraphBase.Графы
         ///необходимое для окраски всех вершин графа, 
         ///чтобы никакие две смежные вершины не были окрашены в один цвет.
         ///</returns>
-        public override int GetChromaticNumber()
+        public override int GetChromaticNumberGreedy()
         {
             int[] colorAssignments = new int[this.VerticesCount];
             for (int i = 0; i < this.VerticesCount; i++)
@@ -122,6 +123,57 @@ namespace GraphBase.Графы
             }
 
             return colorAssignments.Max() + 1; // Возвращает количество использованных цветов
+        }
+
+        /// <summary>
+        /// Вычисляет хроматическое число графа, используя переборный алгоритм.
+        /// </summary>
+        /// <remarks>
+        /// Этот метод исследует все возможные способы раскраски графа, чтобы найти минимальное количество цветов,
+        /// необходимое для того, чтобы никакие две смежные вершины не были окрашены в один и тот же цвет.
+        /// Алгоритм полного перебора может быть очень ресурсоемким для больших графов, так как число комбинаций
+        /// раскрасок растет экспоненциально с увеличением количества вершин.
+        /// </remarks>
+        /// <returns>Минимальное количество цветов, необходимое для раскраски всех вершин графа.</returns>
+        public int GetChromaticNumberBruteForce()
+        {
+            int n = this.VerticesCount; // Количество вершин в графе
+            int[] colors = new int[n]; // Массив для хранения цветов вершин
+
+            int minColors = n; // Начальное значение - максимально возможное количество цветов
+
+            // Рекурсивный метод для перебора всех раскрасок
+            void TryColors(int v)
+            {
+                if (v == n) // Если все вершины окрашены
+                {
+                    minColors = Math.Min(minColors, colors.Distinct().Count()); // Обновляем минимальное количество цветов
+                    return;
+                }
+
+                for (int color = 1; color <= minColors; color++) // Перебор цветов
+                {
+                    bool safeToColor = true;
+                    for (int i = 0; i < n; i++) // Проверка смежности с другими вершинами
+                    {
+                        if (this._adjacencyMatrix[v, i] == 1 && colors[i] == color) // Если смежная вершина уже окрашена в этот цвет
+                        {
+                            safeToColor = false;
+                            break;
+                        }
+                    }
+
+                    if (safeToColor) // Если можно окрасить в данный цвет
+                    {
+                        colors[v] = color; // Окрашиваем вершину
+                        TryColors(v + 1); // Продолжаем для следующей вершины
+                        colors[v] = 0; // Сброс цвета (для следующих итераций)
+                    }
+                }
+            }
+
+            TryColors(0); // Начинаем с первой вершины
+            return minColors; // Возвращаем минимальное найденное количество цветов
         }
 
         #endregion
@@ -299,18 +351,34 @@ namespace GraphBase.Графы
         #endregion
 
         #region Подсчет характеристик
+
         public override string GetInfo(int numberOfColors = 0)
         {
             // Получаем G6-представление графа
             AdjacencyMatrix adjacencyMatrix = new AdjacencyMatrix(this.AdjacencyMatrix);
             string g6String = new G6String(adjacencyMatrix).G6;
 
-            // Получаем хроматическое число и хроматический индекс
-            int chromaticNumber = this.GetChromaticNumber();
-            int chromaticIndex = this.GetChromaticIndex();
+            // Измеряем время выполнения жадного метода
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            int chromaticNumberGreedy = this.GetChromaticNumberGreedy();
+            stopwatch.Stop();
+            long timeGreedy = stopwatch.ElapsedMilliseconds;
+
+            // Измеряем время выполнения переборного метода
+            stopwatch.Restart();
+            int chromaticNumberBruteForce = this.GetChromaticNumberBruteForce();
+            stopwatch.Stop();
+            long timeBruteForce = stopwatch.ElapsedMilliseconds;
+
+            // Если результаты различаются, используем жадный результат
+            //if (chromaticNumberBruteForce != chromaticNumberGreedy)
+            //    chromaticNumberBruteForce = chromaticNumberGreedy;
 
             // Формируем итоговую строку
-            return $"G6-представление: {g6String},Вектор степеней: {adjacencyMatrix.ToDegreeVector()}, Хроматическое число: {chromaticNumber}, Хроматический индекс: {chromaticIndex}";
+            return $"G6-представление: {g6String}, " +
+                   $"Вектор степеней: {adjacencyMatrix.ToDegreeVector()}, " +
+                   $"Хроматическое число (жадный метод): {chromaticNumberGreedy} (выполнено за {timeGreedy} мс), " +
+                   $"Хроматическое число (переборный метод): {chromaticNumberBruteForce} (выполнено за {timeBruteForce} мс)";
         }
 
         #endregion

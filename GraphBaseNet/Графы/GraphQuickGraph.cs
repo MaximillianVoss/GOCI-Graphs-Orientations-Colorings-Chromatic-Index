@@ -38,7 +38,7 @@ namespace GraphBase.Графы
         }
 
 
-        public override int GetChromaticNumber()
+        public override int GetChromaticNumberGreedy()
         {
             UndirectedGraph<int, Edge<int>> graph = this.ConvertToQuickGraph();
             return this.GetChromaticNumber(graph);
@@ -62,7 +62,7 @@ namespace GraphBase.Графы
             string g6String = new G6String(new AdjacencyMatrix(this.AdjacencyMatrix)).G6;
 
             // Получаем хроматическое число и хроматический индекс
-            int chromaticNumber = this.GetChromaticNumber();
+            int chromaticNumber = this.GetChromaticNumberGreedy();
             int chromaticIndex = this.GetChromaticIndex();
 
             // Формируем итоговую строку

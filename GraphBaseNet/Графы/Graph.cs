@@ -25,7 +25,7 @@ namespace GraphBase.Графы
         #endregion
 
         #region Абстрактные методы
-        public abstract int GetChromaticNumber();
+        public abstract int GetChromaticNumberGreedy();
         public abstract int GetChromaticIndex();
         public abstract int GetDistinguishingNumber(int maxColors);
 
